@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What is the time complexity of searching in a balanced binary search tree?",
+    "option_a": "O(1)",
+    "option_b": "O(n)",
+    "option_c": "O(log n)",
+    "option_d": "O(n^2)",
+    "correct_answer": "C"
+  },
+  {
+    "question": "Which protocol is used for secure communication over the internet?",
+    "option_a": "HTTP",
+    "option_b": "FTP",
+    "option_c": "HTTPS",
+    "option_d": "SMTP",
+    "correct_answer": "C"
+  },
+  {
+    "question": "Which data structure follows the Last-In-First-Out (LIFO) principle?",
+    "option_a": "Queue",
+    "option_b": "Linked List",
+    "option_c": "Stack",
+    "option_d": "Tree",
+    "correct_answer": "C"
+  },
+  {
+    "question": "Which of the following is NOT a primary color in the RGB model?",
+    "option_a": "Red",
+    "option_b": "Green",
+    "option_c": "Blue",
+    "option_d": "Yellow",
+    "correct_answer": "D"
+  },
+  {
+    "question": "What does SQL stand for?",
+    "option_a": "Structured Query Language",
+    "option_b": "Simple Query Language",
+    "option_c": "Sequential Query Language",
+    "option_d": "Standard Query Language",
+    "correct_answer": "A"
+  }
+]

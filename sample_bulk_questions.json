@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What is the correct syntax to output 'Hello World' in Python?",
+    "option_a": "echo('Hello World')",
+    "option_b": "print('Hello World')",
+    "option_c": "p('Hello World')",
+    "option_d": "printf('Hello World')",
+    "correct_answer": "print('Hello World')"
+  },
+  {
+    "question": "Which of these is a mutable data type in Python?",
+    "option_a": "tuple",
+    "option_b": "list",
+    "option_c": "int",
+    "option_d": "string",
+    "correct_answer": "list"
+  },
+  {
+    "question": "How do you insert comments in Python code?",
+    "option_a": "// this is a comment",
+    "option_b": "/* this is a comment */",
+    "option_c": "# this is a comment",
+    "option_d": "-- this is a comment",
+    "correct_answer": "# this is a comment"
+  },
+  {
+    "question": "Which operator is used for exponentiation in Python?",
+    "option_a": "^",
+    "option_b": "**",
+    "option_c": "//",
+    "option_d": "pow",
+    "correct_answer": "**"
+  },
+  {
+    "question": "What is the output of len(['a', 'b', 'c'])?",
+    "option_a": "1",
+    "option_b": "2",
+    "option_c": "3",
+    "option_d": "Error",
+    "correct_answer": "3"
+  }
+]
