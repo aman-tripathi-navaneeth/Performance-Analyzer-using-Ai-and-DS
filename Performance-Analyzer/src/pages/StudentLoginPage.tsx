@@ -55,25 +55,25 @@ const StudentLoginPage = () => {
         setIsLoginLoading(true);
 
         try {
-            // Mock API delay
-            await new Promise(resolve => setTimeout(resolve, 800));
+            const response = await fetch(`${API_BASE_URL}/api/students/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    rollNumber: loginEnrollmentId,
+                    password: loginPassword
+                })
+            });
 
-            // Get students from local storage
-            const students = getCollection<any>('db_students');
-            const student = students.find(s => s.rollNumber === loginEnrollmentId && s.password === loginPassword);
+            const data = await response.json();
 
-            if (!student) {
-                throw new Error('Invalid Roll Number or Password');
-            }
-
-            if (student.status === 'pending') {
-                throw new Error('Your registration is still pending admin approval');
+            if (!response.ok) {
+                throw new Error(data.detail || 'Invalid Roll Number or Password');
             }
 
             localStorage.setItem('user', JSON.stringify({
                 role: 'student',
-                username: student.name,
-                ...student
+                username: data.student.name,
+                ...data.student
             }));
 
             toast.success('Student login successful!');
@@ -96,28 +96,24 @@ const StudentLoginPage = () => {
         setIsRegLoading(true);
 
         try {
-            // Mock API delay
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            const students = getCollection<any>('db_students');
-            
-            // Check if user already exists
-            const existingStudent = students.find(s => s.rollNumber === regEnrollmentId);
-            if (existingStudent) {
-                throw new Error('A student with this Roll Number is already registered');
-            }
-
-            // Create new student record
-            insertItem('db_students', {
-                name: regName,
-                rollNumber: regEnrollmentId,
-                password: regPassword,
-                year: regYear,
-                branch: regBranch,
-                section: regSection,
-                status: 'pending', // Requires admin approval
-                createdAt: new Date().toISOString()
+            const response = await fetch(`${API_BASE_URL}/api/students/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: regName,
+                    rollNumber: regEnrollmentId,
+                    password: regPassword,
+                    year: regYear,
+                    branch: regBranch,
+                    section: regSection
+                })
             });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || 'Registration failed');
+            }
 
             toast.success('Registration submitted! Please wait for admin approval.');
             setActiveTab('login');

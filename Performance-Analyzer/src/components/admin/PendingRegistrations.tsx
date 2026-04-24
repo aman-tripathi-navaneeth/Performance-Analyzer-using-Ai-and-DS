@@ -26,8 +26,10 @@ export const PendingRegistrations = () => {
     const fetchPendingStudents = async () => {
         setIsLoading(true);
         try {
-            const students = await import('../../lib/storage').then(mod => mod.getCollection<any>('db_students'));
-            setPendingStudents(students.filter((s: any) => s.status === 'pending'));
+            const response = await fetch(`${API_BASE_URL}/api/admin/pending-students`);
+            if (response.ok) {
+                setPendingStudents(await response.json());
+            }
             setSelectedStudents([]); // Reset selection on fetch
         } catch (error) {
             console.error("Failed to fetch pending students:", error);
@@ -61,25 +63,21 @@ export const PendingRegistrations = () => {
         if (selectedStudents.length === 0) return;
 
         try {
-            const { getCollection, saveCollection } = await import('../../lib/storage');
-            const students = getCollection<any>('db_students');
-            
-            const updatedStudents = students.map((s: any) => {
-                if (selectedStudents.includes(s.rollNumber)) {
-                    return { ...s, status: action === 'approve' ? 'approved' : 'rejected' };
-                }
-                return s;
+            const response = await fetch(`${API_BASE_URL}/api/admin/pending-students/bulk-${action}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rollNumbers: selectedStudents })
             });
-            
-            // If rejected, actively remove them from database
-            const finalStudents = action === 'reject' ? updatedStudents.filter((s: any) => s.status !== 'rejected') : updatedStudents;
-            saveCollection('db_students', finalStudents);
+
+            if (!response.ok) {
+                throw new Error(`Bulk ${action} failed`);
+            }
 
             toast.success(`Successfully ${action}d ${selectedStudents.length} students`);
             fetchPendingStudents();
         } catch (error) {
             console.error(`Error during bulk ${action}:`, error);
-            toast.error(`Local storage error during bulk ${action}`);
+            toast.error(`Error during bulk ${action}`);
         }
     };
 

@@ -30,34 +30,26 @@ const FacultyLoginPage = () => {
         setIsLoading(true);
 
         try {
-            // Trim inputs to prevent accidental spaces causing login failures
-            const trimmedUsername = username.trim();
-            const trimmedPassword = password.trim();
-
-            console.log("=== Debugging Authentication ===");
-            console.log("Input Credentials ->", { username: trimmedUsername, password: trimmedPassword });
-
-            // Ensure single source of truth reading directly from storage
-            const teachers = await import('../lib/storage').then(mod => mod.getCollection<any>('db_teachers'));
-            console.log("Stored Faculty Data ->", teachers);
-
-            // Correct mapping: UI sends 'username', we must match against 'username'
-            // Added defensive casing and explicit checking
-            const teacher = teachers.find((t: any) => {
-                const isMatch = t.username?.trim() === trimmedUsername && t.password === trimmedPassword;
-                if (isMatch) console.log(`[Auth Success] Match found for: ${t.username}`);
-                return isMatch;
+            const response = await fetch(`${API_BASE_URL}/api/teachers/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    facultyId: username.trim(),
+                    password: password.trim()
+                })
             });
 
-            if (!teacher) {
-                console.log("[Auth Failed] No matching credentials found.");
-                throw new Error('Invalid credentials');
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || 'Invalid credentials');
             }
 
-            // Expected role can be 'faculty', 'tpo', or 'hod'
+            const teacher = data.faculty;
+
             localStorage.setItem('user', JSON.stringify({
                 role: teacher.role,
-                username: teacher.username,
+                username: teacher.username || teacher.id,
                 id: teacher.id,
                 name: teacher.name,
                 subject: teacher.subject

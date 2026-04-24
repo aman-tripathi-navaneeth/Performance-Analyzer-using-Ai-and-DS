@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { User, Lock } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import { getCollection, insertItem } from '../lib/storage';
+import { API_BASE_URL } from '../config';
 
 const AdminLoginPage = () => {
   const [username, setUsername] = useState('');
@@ -30,25 +30,22 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-      // Mock API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
 
-      const admins = getCollection<any>('db_admins');
-      
-      // Default fallback if strictly testing empty browser
-      // Admin should natively exist if seeded correctly.
-      if (admins.length === 0 && username === 'admin' && password === 'admin123') {
-          insertItem('db_admins', { username: 'admin', password: 'admin123' });
-          admins.push({ username: 'admin', password: 'admin123' });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Invalid admin credentials');
       }
 
-      const admin = admins.find(a => a.username === username && a.password === password);
-
-      if (!admin) {
-        throw new Error('Invalid admin credentials');
-      }
-
-      localStorage.setItem('user', JSON.stringify({ role: 'admin', username: admin.username }));
+      localStorage.setItem('user', JSON.stringify({ role: 'admin', username: data.admin.username }));
       toast.success('Admin login successful!');
       navigate('/admin-dashboard');
     } catch (error: any) {

@@ -10,6 +10,11 @@ const originalFetch = window.fetch;
  * This completely eliminates the need for the Python SQLite backend.
  */
 export const initMockBackend = () => {
+    const hashPassword = (password: string) => {
+        // Simple hash simulation for mock environment
+        return btoa(password).split('').reverse().join('');
+    };
+
     console.log("🚀 Initializing Client-Side Mock Backend (Local Serverless Mode)");
 
     // Seed default data if empty
@@ -125,10 +130,16 @@ The "correct_answer" field MUST EXACTLY match the text of one of the 4 options e
 
         if (url.includes('/api/students/login') && method === 'POST') {
             const students = getCollection<any>('db_students');
-            const student = students.find(s => s.rollNumber === body.rollNumber && s.password === body.password);
+            const student = students.find(s => s.rollNumber === body.rollNumber && (s.password === body.password || s.password === hashPassword(body.password)));
             if (student) {
                 if (student.status === 'pending') return createError('Registration pending admin approval');
-                return createResponse({ student });
+                return createResponse({ 
+                    student: {
+                        ...student,
+                        role: 'student',
+                        username: student.name
+                    } 
+                });
             }
             return createError('Invalid Roll Number or Password', 401);
         }
@@ -175,6 +186,27 @@ The "correct_answer" field MUST EXACTLY match the text of one of the 4 options e
             const branchId = url.split('/').pop();
             if (branchId) deleteItem('db_branches', { id: branchId });
             return createResponse({ message: 'Branch Deleted' });
+        }
+
+        if (url.includes('/api/admin/pending-students/bulk-approve') && method === 'POST') {
+            const students = getCollection<any>('db_students');
+            const rollNumbers = body.rollNumbers || [];
+            const updated = students.map((s: any) => {
+                if (rollNumbers.includes(s.rollNumber)) {
+                    return { ...s, status: 'approved' };
+                }
+                return s;
+            });
+            saveCollection('db_students', updated);
+            return createResponse({ message: `Successfully approved ${rollNumbers.length} students` });
+        }
+
+        if (url.includes('/api/admin/pending-students/bulk-reject') && method === 'POST') {
+            const students = getCollection<any>('db_students');
+            const rollNumbers = body.rollNumbers || [];
+            const filtered = students.filter((s: any) => !rollNumbers.includes(s.rollNumber));
+            saveCollection('db_students', filtered);
+            return createResponse({ message: `Successfully rejected ${rollNumbers.length} registrations` });
         }
 
         if (url.includes('/api/admin/pending-students') && method === 'GET') {
@@ -413,6 +445,26 @@ The "correct_answer" field MUST EXACTLY match the text of one of the 4 options e
         }
 
         // Analytics Performance Retrieval Pipeline
+        if (url.match(/\/api\/students\/.*\/analytics/) && method === 'GET') {
+            const parts = url.split('/');
+            const studentIdx = parts.indexOf('students') + 1;
+            const roll = parts[studentIdx];
+            
+            const allAnalytics = getCollection<any>('db_analytics');
+            const filtered = allAnalytics.filter(a => String(a.studentRoll) === String(roll));
+            return createResponse(filtered);
+        }
+
+        if (url.match(/\/api\/students\/.*\/report\/pdf/) && method === 'GET') {
+            // In a real app this generates a binary PDF.
+            // In our mock, we return a successful response to prevent UI errors.
+            // The UI will receive this and we can handle it or just mock success.
+            return new Response(new Blob(["Mock PDF Content"], { type: 'application/pdf' }), {
+                status: 200,
+                headers: { 'Content-Disposition': 'attachment; filename="report.pdf"' }
+            });
+        }
+
         if (url.includes('/api/performance/class') && method === 'GET') {
             const urlObj = new URL(url, API_BASE_URL);
             const yearStr = urlObj.searchParams.get('year');
