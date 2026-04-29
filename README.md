@@ -1,8 +1,8 @@
-# 🚀 Performance Analyzer - AI-Powered Academic Insights
+#  Performance Analyzer - AI-Powered Academic Insights
 
 An advanced academic performance analyzer that leverages **Google Gemini AI** to generate intelligent insights, automated test variations, and at-risk student detection.
 
-## ✨ Core Features
+##  Core Features
 - **Intelligent Exam Generator:** Automatically generates high-quality MCQ tests with variations for the same subject using **Gemini 2.5 Flash**.
 - **Performance Analytics:** Comprehensive charts for class and individual student progress.
 - **AI Insights:** Detects performance trends (improving vs. declining) and predicts future academic outcomes.
@@ -16,7 +16,7 @@ An advanced academic performance analyzer that leverages **Google Gemini AI** to
 - **AI Engine:** Google Generative AI (Gemini 2.5 Flash)
 - **Charts:** Recharts
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Prerequisites
 - Node.js (v18+)
@@ -41,11 +41,11 @@ npm install
 npm run dev
 ```
 
-## 🔒 Security
+##  Security
 - **Secure Hashing:** All passwords are SHA-256 hashed.
 - **API Protection:** sensitive keys are managed via `.env` files (not committed to the repository).
 
-## 📄 License
+## License
 MIT License.
 
 ---
