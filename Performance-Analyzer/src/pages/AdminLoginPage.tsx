@@ -115,6 +115,16 @@ const AdminLoginPage = () => {
                 </button>
               </div>
             </form>
+
+            <div className="mt-8 p-4 bg-primary/5 rounded-lg border border-primary/10 animate-fade-in">
+              <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                <Lock size={14} /> Admin Credentials
+              </h3>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <p><span className="font-medium text-foreground">Username:</span> admin</p>
+                <p><span className="font-medium text-foreground">Password:</span> admin123</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

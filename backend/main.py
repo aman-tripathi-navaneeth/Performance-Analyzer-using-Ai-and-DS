@@ -340,13 +340,40 @@ def seed_default_accounts():
             new_tpo = Teacher(
                 name="Training & Placement Officer",
                 username="TPO",
-                password="TPO", # Hardcoded default as requested
+                password=hash_password("TPO"), # Hashed default
                 role="tpo",
-                subject="Placement Training" # Dummy subject
+                subject="Placement Training"
             )
             db.add(new_tpo)
-            db.commit()
+        
+        # Seed Demo Faculty (Aman)
+        faculty_aman = db.query(Teacher).filter(Teacher.username == "Aman").first()
+        if not faculty_aman:
+            new_faculty = Teacher(
+                name="Aman",
+                username="Aman",
+                password=hash_password("aman@123"),
+                role="faculty",
+                subject="Computer Science"
+            )
+            db.add(new_faculty)
+            
+        # Seed Demo Student (226K1A0545)
+        student_aman = db.query(Student).filter(Student.rollNumber == "226K1A0545").first()
+        if not student_aman:
+            new_student = Student(
+                name="Aman",
+                rollNumber="226K1A0545",
+                password=hash_password("aman"),
+                year="3rd Year",
+                branch="CSE",
+                section="A"
+            )
+            db.add(new_student)
+            
+        db.commit()
     except Exception as e:
+        db.rollback()
         print(f"Error seeding background info: {e}")
     finally:
         db.close()

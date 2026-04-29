@@ -211,6 +211,16 @@ const StudentRegistrationPage = () => {
                                 <p>Already have an account? <Link to="/student-login" className="text-primary hover:underline font-medium">Log in here</Link></p>
                             </div>
                         </form>
+
+                        <div className="mt-8 p-4 bg-primary/5 rounded-lg border border-primary/10 animate-fade-in">
+                            <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                                <GraduationCap size={14} /> Student Credentials
+                            </h3>
+                            <div className="space-y-1 text-sm text-muted-foreground">
+                                <p><span className="font-medium text-foreground">Roll Number:</span> 226K1A0545</p>
+                                <p><span className="font-medium text-foreground">Password:</span> aman</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

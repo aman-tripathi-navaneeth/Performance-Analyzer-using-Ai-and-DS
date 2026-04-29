@@ -17,12 +17,23 @@ export const initMockBackend = () => {
 
     console.log("🚀 Initializing Client-Side Mock Backend (Local Serverless Mode)");
 
-    // Seed default data if empty
-    if (getCollection('db_admins').length === 0) {
+    // Seed default data
+    const admins = getCollection<any>('db_admins');
+    if (!admins.find(a => a.username === 'admin')) {
         insertItem('db_admins', { username: 'admin', password: 'admin123' });
     }
-    if (getCollection('db_teachers').length === 0) {
-        insertItem('db_teachers', { id: 'FL-001', name: 'John Doe', branch: 'CSE', password: 'password123' });
+
+    const teachers = getCollection<any>('db_teachers');
+    if (!teachers.find(t => t.id === 'Aman')) {
+        insertItem('db_teachers', { id: 'Aman', username: 'Aman', name: 'Aman', branch: 'CSE', password: 'aman@123', role: 'faculty' });
+    }
+    if (!teachers.find(t => t.id === 'FL-001')) {
+        insertItem('db_teachers', { id: 'FL-001', name: 'John Doe', branch: 'CSE', password: 'password123', role: 'faculty' });
+    }
+
+    const students = getCollection<any>('db_students');
+    if (!students.find(s => s.rollNumber === '226K1A0545')) {
+        insertItem('db_students', { rollNumber: '226K1A0545', name: 'Aman', password: 'aman', status: 'approved', year: '3rd Year', branch: 'CSE', section: 'A' });
     }
     if (getCollection('db_sections').length === 0) {
         saveCollection('db_sections', [{ id: '1', name: 'A' }, { id: '2', name: 'B' }]);
@@ -34,7 +45,7 @@ export const initMockBackend = () => {
     const generateGeminiQuestions = async (subject: string, numQuestions: number) => {
         try {
             console.log(`Pinging Gemini API Native Web for ${numQuestions} questions on ${subject}...`);
-            const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyB2wszEpxem-RQUZXSGNRDurOhQwvjkRs8";
+            const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             
             const prompt = `Generate exactly ${numQuestions} multiple-choice questions for the academic subject "${subject}". 
@@ -82,7 +93,9 @@ The "correct_answer" field MUST EXACTLY match the text of one of the 4 options e
 
     window.fetch = async (...args) => {
         const [resource, config] = args;
-        const url = typeof resource === 'string' ? resource : resource.url;
+        const url = typeof resource === 'string' 
+            ? resource 
+            : (resource instanceof URL ? resource.toString() : (resource as Request).url);
         
         // If not calling our API base url, just pass through (e.g., loading assets)
         if (!url.startsWith(API_BASE_URL) && !url.includes('/api/')) {
@@ -123,7 +136,7 @@ The "correct_answer" field MUST EXACTLY match the text of one of the 4 options e
 
         if (url.includes('/api/teachers/login') && method === 'POST') {
             const teachers = getCollection<any>('db_teachers');
-            const teacher = teachers.find(t => t.id === body.facultyId && t.password === body.password);
+            const teacher = teachers.find(t => (t.id === body.facultyId || t.username === body.facultyId) && t.password === body.password);
             if (teacher) return createResponse({ faculty: teacher });
             return createError('Invalid faculty credentials', 401);
         }

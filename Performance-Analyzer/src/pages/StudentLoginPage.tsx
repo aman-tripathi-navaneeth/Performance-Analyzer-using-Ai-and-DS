@@ -207,6 +207,16 @@ const StudentLoginPage = () => {
                                         </button>
                                     </div>
                                 </form>
+
+                                <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10 animate-fade-in">
+                                    <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                                        <GraduationCap size={14} /> Student Credentials
+                                    </h3>
+                                    <div className="space-y-1 text-sm text-muted-foreground">
+                                        <p><span className="font-medium text-foreground">Roll Number:</span> 226K1A0545</p>
+                                        <p><span className="font-medium text-foreground">Password:</span> aman</p>
+                                    </div>
+                                </div>
                             </TabsContent>
 
                             <TabsContent value="register" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -312,6 +322,16 @@ const StudentLoginPage = () => {
                                         <p>Already have an account? <span onClick={() => setActiveTab('login')} className="text-primary hover:underline font-medium cursor-pointer">Sign in here</span></p>
                                     </div>
                                 </form>
+
+                                <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10 animate-fade-in">
+                                    <h3 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                                        <GraduationCap size={14} /> Student Credentials
+                                    </h3>
+                                    <div className="space-y-1 text-sm text-muted-foreground">
+                                        <p><span className="font-medium text-foreground">Roll Number:</span> 226K1A0545</p>
+                                        <p><span className="font-medium text-foreground">Password:</span> aman</p>
+                                    </div>
+                                </div>
                             </TabsContent>
                         </Tabs>
                     </div>
